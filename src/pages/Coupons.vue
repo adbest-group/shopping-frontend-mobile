@@ -14,10 +14,10 @@
 <script>
   import { Loadmore } from 'mint-ui'
   import { mapActions, mapState } from 'vuex'
-  import {baseTitle} from '../utils/Global'
+  import {baseTitle} from '../utils/Global.vue'
   import TopSearch from '../components/TopSearch.vue'
-  import MyHeader from '../components/Myheader'
-  import CouponsItems from '../components/CouponsItems'
+  import MyHeader from '../components/Myheader.vue'
+  import CouponsItems from '../components/CouponsItems.vue'
 
   export default{
     name:'detail',

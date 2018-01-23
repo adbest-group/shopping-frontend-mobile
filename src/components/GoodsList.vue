@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import NoList from './NoList'
+import NoList from './NoList.vue'
 import upvote from '../components/Upvote.vue'
 import { changeTime, dealDomain, ignoreLink, getOff } from '../utils/utils';
 import { mapActions, mapState } from 'vuex'
