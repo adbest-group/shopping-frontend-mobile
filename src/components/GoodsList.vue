@@ -34,7 +34,7 @@
             </span>
           </p>
         </div>
-        <div class="goods-detail" v-if="detailList[index] && !(isLoadingIndex === index)">
+        <div class="goods-detail" ref="goodsDetail" v-if="detailList[index] && !(isLoadingIndex === index)">
           <p class="source clearfix">
             <span class="mallName" v-if="goods.mallName">
               {{goods.mallName}}
@@ -79,6 +79,9 @@
           <a :href="goods.url" v-if="detailList[index]">
             <div class="buyNowLink btn">Buy Now</div>
           </a>
+          <div class="goods-shrink" v-if="detailList[index]" @click="shrink(index)">
+            <img src="../assets/images/shrink.png" alt="">
+          </div>
         </div>
       </li >
     </ul>
@@ -119,6 +122,7 @@ export default {
       ignoreLink,
       getOff,
       detailList: [], // 详情列表
+      indexList: [], // 用来存储已查看详情的商品的index  用于收缩详情时查询dom以便于滚回原来高度
       isLoadingIndex: null // 是否显示loading动画
     }
   },
@@ -136,11 +140,23 @@ export default {
       this.behaviorFun(data).then(() => {
         this.getGoodsDetail({id: data.goodId})
       })
+    },
+    shrink(index) { // 收缩详情
+      var detailIndex = this.indexList.indexOf(index)
+      var detailH = this.$refs.goodsDetail[detailIndex].offsetHeight
+
+      document.documentElement.scrollTop -= detailH
+
+      this.isLoadingIndex = index
+      this.detailList[index] = null;
+      this.isLoadingIndex = null
+      this.indexList.splice(detailIndex, 1)
     }
   },
   watch: {
     'goodsDetail' (to, from) {
       this.detailList[this.isLoadingIndex] = to
+      this.indexList.push(this.isLoadingIndex)
       this.isLoadingIndex = null
     }
   },
@@ -303,10 +319,10 @@ export default {
       }
 
       .seeMoreStyle{
-        height: 1.5rem;
+        height: 2.78rem;
         .upvote{
           left: 50%;
-          top: 1rem;
+          top: 1.15rem;
           transform: translateX(-50%);
         }
         .buyNowLink {
@@ -317,6 +333,13 @@ export default {
           padding: 0;
           right: 50%;
           transform: translateX(50%);
+        }
+
+        .goods-shrink{
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
         }
       }
     }

@@ -2,7 +2,6 @@ var path = require('path')
 var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
-var PrerenderSpaPlugin = require('prerender-spa-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -67,12 +66,5 @@ module.exports = {
         loaders: ["style", "css", "sass"]
       }
     ]
-  },
-  plugins: [
-    new PrerenderSpaPlugin(
-      path.join(__dirname, '../dist'),
-      // 预渲染路由列表
-      [ '/', '/coupons', '/gifts' ]
-    )
-  ]
+  }
 }

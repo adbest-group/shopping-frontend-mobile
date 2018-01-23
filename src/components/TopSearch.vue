@@ -38,6 +38,9 @@
         </div>
       </div>
     </div>
+    <div class="toTopBtn" v-show="searchBarFixed" @click="toTop">
+      <img src="../assets/images/toTop.png" alt="">
+    </div>
   </div>
 </template>
 <script>
@@ -53,7 +56,7 @@
           isSearchResult: false, // 列表显示的是否为搜索结果
           searchBarFixed: false, // 是否固定搜索框
           offsetTop:0,//初始位置
-          flag:false // 延后获取初始位置的flag
+          flag:false, // 延后获取初始位置的flag
           // linkList:[{link:"/",name:'Home'},{link:"/coupons",name:'Coupons'},{link:"/gifts",name:'Gifts'},{link:"/?category=Beauty",name:'Beauty'},{link:"/?category=Clothing,%20Jewelry%20%26%20Bags",name:'Clothing'},{link:"/?category=Kids",name:'Kids'},{link:"/?category=Electronics",name:'Electronics'}]
         }
       },
@@ -88,8 +91,7 @@
             this.changePage(text)
             this.search = '';
             this.hideCover()
-            document.body.scrollTop = 0
-            document.documentElement.scrollTop = 0
+            this.toTop()
             this.isSearchResult = true
           }
         },
@@ -110,6 +112,10 @@
           } else {
             this.searchBarFixed = false
           }
+        },
+        toTop() {
+          document.body.scrollTop = 0
+          document.documentElement.scrollTop = 0
         }
       },
       watch:{
@@ -217,6 +223,24 @@
         height: .7rem;
         margin: .4rem .2rem .4rem .4rem;
       }
+    }
+  }
+
+  .toTopBtn{
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid #000;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    transform: translateX(50%);
+    img{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
     }
   }
 
