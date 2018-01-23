@@ -1,5 +1,5 @@
 <template>
-  <div style="background:#f0f2f5;margin-top: -20px;">
+  <div style="background:#f0f2f5;">
     <div class="wscn-http404">
       <div class="pic-404">
         <img class="pic-404__parent" :src="img_404" alt="404">
@@ -40,13 +40,12 @@
     position: relative;
     width: auto;
     height: 100vh;
-    padding: 0 100px;
+    padding: 0 .5rem;
     overflow: hidden;
   .pic-404 {
     position: relative;
-    float: left;
-    width: 600px;
-    padding: 180px 0;
+    width: 100%;
+    padding: .9rem 0 .5rem;
     overflow: hidden;
   &__parent {
      width: 100%;
@@ -54,9 +53,9 @@
   &__child {
      position: absolute;
   &.left {
-     width: 80px;
-     top: 17px;
-     left: 220px;
+     width: .4rem;
+     top: .8rem;
+     left: 1.1rem;
      opacity: 0;
      animation-name: cloudLeft;
      animation-duration: 2s;
@@ -65,9 +64,9 @@
      animation-delay: 1s;
    }
   &.mid {
-     width: 46px;
-     top: 10px;
-     left: 420px;
+     width: .23rem;
+     top: .1rem;
+     left: 2.1rem;
      opacity: 0;
      animation-name: cloudMid;
      animation-duration: 2s;
@@ -76,9 +75,9 @@
      animation-delay: 1.2s;
    }
   &.right {
-     width: 62px;
-     top: 100px;
-     left: 500px;
+     width: .31rem;
+     top: .5rem;
+     left: 2.5rem;
      opacity: 0;
      animation-name: cloudRight;
      animation-duration: 2s;
@@ -88,67 +87,67 @@
    }
   @keyframes cloudLeft {
     0% {
-      top: 17px;
-      left: 220px;
+      top: .8rem;
+      left: 1.1rem;
       opacity: 0;
     }
     20% {
-      top: 33px;
-      left: 188px;
+      top: .16rem;
+      left: .94rem;
       opacity: 1;
     }
     80% {
-      top: 81px;
-      left: 92px;
+      top: .4rem;
+      left: .46rem;
       opacity: 1;
     }
     100% {
-      top: 97px;
-      left: 60px;
+      top: .48rem;
+      left: .3rem;
       opacity: 0;
     }
   }
   @keyframes cloudMid {
     0% {
-      top: 10px;
-      left: 420px;
+      top: .05rem;
+      left: 2.1rem;
       opacity: 0;
     }
     20% {
-      top: 40px;
-      left: 360px;
+      top: .2rem;
+      left: 1.8rem;
       opacity: 1;
     }
     70% {
-      top: 130px;
-      left: 180px;
+      top: .65rem;
+      left: .9rem;
       opacity: 1;
     }
     100% {
-      top: 160px;
-      left: 120px;
+      top: .8rem;
+      left: .6rem;
       opacity: 0;
     }
   }
   @keyframes cloudRight {
     0% {
-      top: 100px;
-      left: 500px;
+      top: .5rem;
+      left: 2.5rem;
       opacity: 0;
     }
     20% {
-      top: 120px;
-      left: 460px;
+      top: .6rem;
+      left: 2.3rem;
       opacity: 1;
     }
     80% {
-      top: 180px;
-      left: 340px;
+      top: .9rem;
+      left: 1.7rem;
       opacity: 1;
     }
     100% {
-      top: 200px;
-      left: 300px;
+      top: 1rem;
+      left: 1.5rem;
       opacity: 0;
     }
   }
@@ -156,27 +155,26 @@
   }
   .bullshit {
     position: relative;
-    float: left;
-    width: 300px;
-    padding: 200px 0;
+    width: 100%;
+    padding: 1rem 0;
     overflow: hidden;
   &__oops {
-     font-size: 32px;
+     font-size: 20px;
      font-weight: bold;
-     line-height: 40px;
+     line-height: .2rem;
      color: #1482f0;
      opacity: 0;
-     margin-bottom: 20px;
+     margin-bottom: .2rem;
      animation-name: slideUp;
      animation-duration: 0.5s;
      animation-fill-mode: forwards;
    }
   &__headline {
-     font-size: 20px;
-     line-height: 24px;
+     font-size: 16px;
+     line-height: .48rem;
      color: #1482f0;
      opacity: 0;
-     margin-bottom: 10px;
+     margin-bottom: .05rem;
      animation-name: slideUp;
      animation-duration: 0.5s;
      animation-delay: 0.1s;
@@ -184,10 +182,10 @@
    }
   &__info {
      font-size: 13px;
-     line-height: 21px;
+     line-height: .4rem;
      color: grey;
      opacity: 0;
-     margin-bottom: 30px;
+     margin-bottom: .15rem;
      animation-name: slideUp;
      animation-duration: 0.5s;
      animation-delay: 0.2s;
@@ -196,15 +194,15 @@
   &__return-home {
      display: block;
      float: left;
-     width: 110px;
-     height: 36px;
+     width: 2.2rem;
+     height: .72rem;
      background: #1482f0;
-     border-radius: 100px;
+     border-radius: .5rem;
      text-align: center;
      color: #ffffff;
      opacity: 0;
      font-size: 14px;
-     line-height: 36px;
+     line-height: .72rem;
      cursor: pointer;
      animation-name: slideUp;
      animation-duration: 0.5s;
@@ -213,7 +211,7 @@
    }
   @keyframes slideUp {
     0% {
-      transform: translateY(60px);
+      transform: translateY(.3rem);
       opacity: 0;
     }
     100% {

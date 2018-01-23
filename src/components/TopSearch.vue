@@ -1,16 +1,24 @@
 <template>
-  <div>
-    <div class="search clearfix">
+  <div :class="{'isFixed': searchBarFixed}" id="searchBar">
+    <div class="search clearfix" >
       <ul class="hot">
-        <li class="hotKey" v-for="(key, index) in keyList" :key="index" :class="{'active': index === 0}">
-          {{key}}
+        <li
+          class="hotKey" 
+          v-for="(key, index) in keyList" 
+          :key="index" 
+          :class="{'active': $route.path === key.link && !isSearchResult}"
+          @click="toLink(key.link)">
+          {{key.name}}
+        </li>
+        <li class="hotKey active" v-show="isSearchResult">
+          搜索结果
         </li>
       </ul>
       <div class="btnGroup">
         <div class="searchBtn" @click="showCover">
           <img src="../assets/images/search.png" alt="">
         </div>
-        <div class="refreshBtn" @click="refresh">
+        <div class="refreshBtn" @click="refresh" v-show="!isSearchResult">
           <img src="../assets/images/refresh.png" alt="">
         </div>
       </div>
@@ -38,27 +46,23 @@
       name:'topSearch',
       data(){
         return {
-          keyList: ['商品列表', '热门商品', '九块九'],
+          keyList: [{link:"/",name:'Home'},{link:"/coupons",name:'Coupons'}],
           coverFlag: false, // 是否显示遮罩层
           search:'',
-          linkList:[{link:"/",name:'Home'},{link:"/coupons",name:'Coupons'},{link:"/gifts",name:'Gifts'},{link:"/?category=Beauty",name:'Beauty'},{link:"/?category=Clothing,%20Jewelry%20%26%20Bags",name:'Clothing'},{link:"/?category=Kids",name:'Kids'},{link:"/?category=Electronics",name:'Electronics'}],
-          searchBarFixed:false,
+          activeIndex: 0,
+          isSearchResult: false, // 列表显示的是否为搜索结果
+          searchBarFixed: false, // 是否固定搜索框
           offsetTop:0,//初始位置
-          flag:false// 延后获取初始位置的flag
+          flag:false // 延后获取初始位置的flag
+          // linkList:[{link:"/",name:'Home'},{link:"/coupons",name:'Coupons'},{link:"/gifts",name:'Gifts'},{link:"/?category=Beauty",name:'Beauty'},{link:"/?category=Clothing,%20Jewelry%20%26%20Bags",name:'Clothing'},{link:"/?category=Kids",name:'Kids'},{link:"/?category=Electronics",name:'Electronics'}]
         }
       },
       props:{
         refresh: {
           type: Function
         },
-        hotWords:{
-          default:[]
-        },
         behaviorFun: {
           type: Function,
-        },
-        pathOn:{
-          default:'Home'
         }
       },
       computed:{
@@ -84,27 +88,28 @@
             this.changePage(text)
             this.search = '';
             this.hideCover()
+            document.body.scrollTop = 0
+            document.documentElement.scrollTop = 0
+            this.isSearchResult = true
           }
         },
-        gotoIndex: function(){
-          var obj =Object.assign({}, this.$route.query, {page:1,key:''})
-          var d = createUrl(obj);
-          this.$router.push({path:'/?'+d})
+        toLink (link) {
+          this.isSearchResult = false
+          this.$router.push(link)
         },
         handleScroll () {
           var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
           if(!this.flag){
             this.flag=true
-            this.offsetTop = document.querySelector('#navBar').offsetTop
+            this.offsetTop = document.querySelector('#searchBar').offsetTop
           }
-          if (scrollTop > this.offsetTop+10) {
+          var height = document.querySelector('#header').clientHeight
+
+          if (scrollTop > this.offsetTop + height) {
             this.searchBarFixed = true
           } else {
             this.searchBarFixed = false
           }
-        },
-        checkMenuAndCategory(category,menu){
-          return category&&menu&&(category.toLowerCase().indexOf(menu.toLowerCase()) > -1)
         }
       },
       watch:{
@@ -116,11 +121,12 @@
         this.search=this.$route.query.key;
       },
       mounted () {
-        // this.handleScroll();
-        // window.addEventListener('scroll', this.handleScroll)
-        // this.offsetTop = document.querySelector('#navBar').offsetTop
-        // console.log(document.querySelector('#navBar'))
-        //console.log(queryCategory);
+        this.handleScroll();
+        window.addEventListener('scroll', this.handleScroll)
+        this.offsetTop = document.querySelector('#searchBar').offsetTop
+      },
+      beforeDestroy () {
+        window.removeEventListener('scroll', this.handleScroll)
       }
 
     }
@@ -162,7 +168,7 @@
   }
 
   .backCover{
-    position: absolute;
+    position: fixed;
     top: 0px;
     left: 0px;
     right: 0px;
@@ -213,16 +219,13 @@
       }
     }
   }
-  .isFixedNav{
-    position:fixed;
-    top:0px;
-    z-index:9999;
+
+  .isFixed{
     width: 100%;
-  }
-  .search-fixed{
-    display: none;
-  }
-  .isFixedNav .search-fixed{
-    display: block;
+    background-color: #f5f5f5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
   }
 </style>

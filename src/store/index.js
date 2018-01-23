@@ -8,8 +8,8 @@ Vue.use(Vuex)
 
 const state = {
     goodsList:[],//商品列表
-     maxId:0,
-     maxSyncTime:0,
+    maxId:0,
+    maxSyncTime:0,
     goodsDetail:{},//商品详情
     //goodsState:{//商品搜索状态   暂时不要,数据保存在 query 中
     //  mall:'',//商城
@@ -17,6 +17,7 @@ const state = {
     //  page:'1',
     //},
     hotGoods:[],//热门商品
+    cheapGoods: [], // 九块九商品
     hotWords:[],//热词
     malls:[],//商城
     categorys:[],//商品类别

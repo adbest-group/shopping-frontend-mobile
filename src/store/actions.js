@@ -34,6 +34,15 @@ export const getSearchList = ({ commit }, payload) => {
   })
 }
 
+// 获取九块九商品
+export const getCheapGoods= ({ commit }) => {
+  NProgress.start()
+  api.fetchCheapGoods().then(({data}) => {
+    if(data.code==0)commit(types.GET_CHEAP_GOODS, data.result)
+    NProgress.done()
+  })
+}
+
 //获取商品详情
 export const getGoodsDetail = ({ commit }, payload) => {
   api.fetchGoodsDetail(payload).then(({data}) => {

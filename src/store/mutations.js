@@ -32,6 +32,12 @@ export default {
     data.length=5
     state.hotGoods=data
   },
+  [types.GET_CHEAP_GOODS] (state,  data ) {
+    state.cheapGoods=data.list
+    state.goodsTotalCount=data.totalCount;
+    state.goodsPageSize=data.pageSize;
+    state.goodsPageIndex=parseInt(data.pageIndex);
+  },
   [types.GET_MALLS] (state,  data ) {
     state.malls=data
   },

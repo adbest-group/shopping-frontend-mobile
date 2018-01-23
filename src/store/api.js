@@ -35,6 +35,12 @@ export const fetchCategorys = () => {
   return axios.get('/categorys')
 }
 
+// 获取九块九商品
+export const fetchCheapGoods = (data) => {
+  var d = qs.stringify(data);
+  return axios.post('/cheaps', d)
+}
+
 // 关于  var d = qs.stringify(data); 的优化 见 寻址项目 对 axios 的封装
 //获取商品列表
 export const fetchGoodsList = (data) => {
@@ -95,3 +101,4 @@ export const  fetchMallHot=(data)=>{
 export const  fetchCoupons=()=>{
   return axios.get('/coupon')
 }
+
