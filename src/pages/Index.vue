@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-  import MyHeader from '../components/Myheader.vue'
+  import MyHeader from '../components/MyHeader.vue'
   import GoodsList from '../components/GoodsList.vue'
   import { Loadmore } from 'mint-ui';
   import TopSearch from '../components/TopSearch.vue'

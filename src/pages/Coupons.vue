@@ -16,7 +16,7 @@
   import { mapActions, mapState } from 'vuex'
   import {baseTitle} from '../utils/Global'
   import TopSearch from '../components/TopSearch.vue'
-  import MyHeader from '../components/Myheader.vue'
+  import MyHeader from '../components/MyHeader.vue'
   import CouponsItems from '../components/CouponsItems.vue'
 
   export default{
