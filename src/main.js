@@ -6,6 +6,7 @@ import Icon from 'vue-svg-icon/Icon.vue';
 import 'vue2-toast/lib/toast.css';
 import Toast from 'vue2-toast';
 import MintUI from 'mint-ui'
+import VueScrollTo from 'vue-scrollto'
 import 'mint-ui/lib/style.css'
 import './utils/rem'
 
@@ -21,15 +22,32 @@ Vue.directive('title', {
   }
 })
 Vue.component('icon', Icon);
+
 Vue.use(Toast, {
   defaultType: 'center',
   duration: 1500,
 });
+
 Vue.filter('uppercase', function(value) {
   if (!value) { return ''}
   value = value.toString()
   return value.toUpperCase() ;
 })
+
+Vue.use(VueScrollTo)
+
+Vue.use(VueScrollTo, {
+  container: "body",
+  duration: 500,
+  easing: "ease",
+  offset: 0,
+  cancelable: true,
+  onDone: false,
+  onCancel: false,
+  x: false,
+  y: true
+})
+
 Vue.use(MintUI)
 new Vue({
   el: '#app',

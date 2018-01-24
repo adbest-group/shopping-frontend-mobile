@@ -6,19 +6,19 @@
           class="hotKey" 
           v-for="(key, index) in keyList" 
           :key="index" 
-          :class="{'active': $route.path === key.link && !isSearchResult}"
+          :class="{'active': $route.path === key.link && !$route.query.key}"
           @click="toLink(key.link)">
           {{key.name}}
         </li>
-        <li class="hotKey active" v-show="isSearchResult">
-          搜索结果
+        <li class="hotKey active" v-show="$route.query.key">
+          Search Result
         </li>
       </ul>
       <div class="btnGroup">
         <div class="searchBtn" @click="showCover">
           <img src="../assets/images/search.png" alt="">
         </div>
-        <div class="refreshBtn" @click="refresh" v-show="!isSearchResult">
+        <div class="refreshBtn" @click="refresh" v-show="!$route.query.key">
           <img src="../assets/images/refresh.png" alt="">
         </div>
       </div>
@@ -27,7 +27,7 @@
     <div class="backCover" v-show="coverFlag" @click="hideCover">
       <div class="search-wrapper" @click.stop>
         <div class="search-header clearfix">
-          <span class="title">搜索本站折扣</span>
+          <span class="title">Search site discount</span>
           <div class="closeBtn" @click="hideCover">
             <img src="../assets/images/closeicon.png" alt="">
           </div>
@@ -38,7 +38,9 @@
         </div>
       </div>
     </div>
-    <div class="toTopBtn" v-show="searchBarFixed" @click="toTop">
+    <div class="toTopBtn" 
+          v-show="searchBarFixed" 
+          v-scroll-to="'#header'">
       <img src="../assets/images/toTop.png" alt="">
     </div>
   </div>
@@ -53,7 +55,6 @@
           coverFlag: false, // 是否显示遮罩层
           search:'',
           activeIndex: 0,
-          isSearchResult: false, // 列表显示的是否为搜索结果
           searchBarFixed: false, // 是否固定搜索框
           offsetTop:0,//初始位置
           flag:false, // 延后获取初始位置的flag
@@ -92,11 +93,9 @@
             this.search = '';
             this.hideCover()
             this.toTop()
-            this.isSearchResult = true
           }
         },
         toLink (link) {
-          this.isSearchResult = false
           this.$router.push(link)
         },
         handleScroll () {
@@ -233,8 +232,8 @@
     background-color: #fff;
     border: 1px solid #000;
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: .2rem;
+    right: .7rem;
     transform: translateX(50%);
     img{
       position: absolute;

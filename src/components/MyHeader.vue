@@ -3,9 +3,9 @@
     <div class="logo">
       <img src="../assets/logo.png" alt="">
     </div>
-    <router-link to="/" class="toPc">
+    <!-- <router-link to="/" class="toPc">
       电脑版>
-    </router-link>
+    </router-link> -->
   </header>
 </template>
 

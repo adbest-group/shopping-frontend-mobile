@@ -3,7 +3,7 @@
   <div class="VueStar">
     <div class="VueStar__ground">
       <div class="VueStar__icon" @click="toggle" :class="AnimateClass" >
-        <icon name="upvote" scale="2.5" :style='{color:ColorValue}' slot="icon" ></icon>
+        <icon name="upvote" scale="3" :style='{color:ColorValue}' slot="icon" ></icon>
       </div>
       <div class="VueStar__decoration" :class="{ 'VueStar__decoration--active':active}"></div>
     </div>

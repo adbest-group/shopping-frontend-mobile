@@ -16,21 +16,33 @@ export const getHotWords = ({ commit }) => {
 //获取商品列表
 export const getGoodsList = ({ commit }, payload) => {
   NProgress.start()
-  api.fetchGoodsList(payload).then(({data}) => {
-    if(data.code==0){
-      commit(types.GET_GOODS_LIST, data.result)
-      commit(types.GET_MAX_ID_SYNC, data.result)
-      NProgress.done()
-    }
+  return new Promise((resolve, reject) => {
+    api.fetchGoodsList(payload).then(({data}) => {
+      if(data.code==0){
+        commit(types.GET_GOODS_LIST, data.result)
+        commit(types.GET_MAX_ID_SYNC, data.result)
+        resolve()
+        NProgress.done()
+      } else {
+        reject()
+      }
+    })
   })
 }
 
 //通过关键字 获取商品列表
 export const getSearchList = ({ commit }, payload) => {
   NProgress.start()
-  api.fetchSearchList(payload).then(({data}) => {
-    if(data.code==0)commit(types.GET_GOODS_LIST, data.result)
-    NProgress.done()
+  return new Promise((resolve, reject) => {
+    api.fetchSearchList(payload).then(({data}) => {
+      if(data.code==0){
+        commit(types.GET_GOODS_LIST, data.result)
+        resolve()
+        NProgress.done()
+      } else {
+        reject()
+      }
+    })
   })
 }
 

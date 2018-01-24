@@ -7,11 +7,13 @@
       <top-search
         :behaviorFun='getBehaviorAdd' 
         :refresh="loadTop"></top-search>
+                  <!-- :bottomAllLoaded="bottomAllLoaded" 
+          :bottom-method="loadBottom" 
+          :autoFill="autoFill"
+          :bottomDistance="30" -->
       <mt-loadmore  
           :top-method="loadTop"
-          :bottomAllLoaded="bottomAllLoaded" 
-          :bottom-method="loadBottom" 
-          :autoFill="autoFill" 
+
           ref="loadmore"
           style="width:100%">
         <a class="feednotify" v-if="goodsNotify > criticalNotifyNum"  @click="getGoodsList($route.query)">
@@ -21,7 +23,10 @@
         <goods-list 
           :goodsList="goodsList" 
           :getThumbsAdd="getThumbsAdd"
-          :behaviorFun='getBehaviorAdd'></goods-list>
+          :behaviorFun='getBehaviorAdd'
+          :isListLoading='isListLoading'
+          :scrollDisabled="scrollDisabled"
+          ></goods-list>
       </mt-loadmore>
   </div>
 </template>
@@ -48,39 +53,54 @@
         title:baseTitle,
         loadFlag:false,
         addPage:0,
-        bottomAllLoaded: false,  // bottomAllLoaded 为真时将不加载新数据 即所有数据加载完成后
-        autoFill: false // 是否填充容器
+        scrollDisabled: false, // 控制无限滚动列表能否滚动
+        // bottomAllLoaded: false,  // bottomAllLoaded 为真时将不加载新数据 即所有数据加载完成后
+        // autoFill: false, // 是否填充容器
+        isListLoading: false  // 列表数据加载loading
       }
     },
     methods: {    //绑定事件的关键代码
       loadTop () { // 下拉刷新
-        this.changePage(1)
-        this.$refs.loadmore.onTopLoaded();
+        var data =Object.assign({}, this.$route.query, {page: 1})
+
+        if(data.key) {
+          this.getSearchList(data).then(() => {
+            this.$refs.loadmore.onTopLoaded();
+          })
+        } else {
+          this.getGoodsList(data).then(() => {
+            this.$refs.loadmore.onTopLoaded();
+          })
+        }
+
         document.body.scrollTop = 0
         document.documentElement.scrollTop = 0
       },
-      loadBottom () { // 上啦加载
-        this.autoFill = false
-        this.changePage(this.goodsPageIndex + 1)
-        this.$refs.loadmore.onBottomLoaded()
-        this.autoFill = true
-        if(this.goodsPageIndex + 1 === this.getPageCount) {
-          this.bottomAllLoaded = true
-        }
-
-      },
-      changePage(i) {
-        var obj =Object.assign({}, this.$route.query, {page: i})
-        var d = qs.stringify(obj);
-        this.$router.push({path:'/?'+d})
-      },
+      // loadBottom () { // 上啦加载
+      //   this.autoFill = false
+      //   this.changePage(this.goodsPageIndex + 1)
+      // },
+      // changePage(i) {
+      //   var obj =Object.assign({}, this.$route.query, {page: i})
+      //   var d = qs.stringify(obj);
+      //   this.$router.push({path:'/?'+d})
+      // },
+      // listLoadEnd() { // 列表数据加载完成后执行的  用来重新计算 load-more内的元素位置
+      //   if(this.goodsPageIndex > 1) {
+      //     this.$refs.loadmore.onBottomLoaded()
+      //     this.autoFill = true
+      //     if(this.goodsPageIndex + 1 === this.getPageCount) {
+      //       this.bottomAllLoaded = true
+      //     }
+      //   }
+      // },
       ...mapActions([
         'getGoodsList',
         'getGoodsNotify',
         'getSearchList',
         'getBehaviorAdd',
         'getThumbsAdd'
-        ])
+      ])
     },
   computed: {
     ...mapGetters(['getPageCount']),
@@ -90,11 +110,16 @@
     }
   },
   created () {
+    this.isListLoading = true
     if(this.$route.query.key){
-      this.getSearchList(this.$route.query);
+      this.getSearchList(this.$route.query).then(() => {
+        this.isListLoading = false
+      })
     }
     else {
-      this.getGoodsList(this.$route.query);
+      this.getGoodsList(this.$route.query).then(() => {
+        this.isListLoading = false
+      })
     };
 
     //定时请求任务  获取新增条目数;
@@ -108,13 +133,20 @@
   },
   watch:{
     '$route' (to, from) {
-      if(to.query.key){
+      this.scrollDisabled = true
+      if (to.query.key){
         this.addPage = 0
-        this.getSearchList(to.query)
-      }
-      else{
+        this.getSearchList(to.query).then(() => {
+          // this.listLoadEnd()
+          this.scrollDisabled = this.goodsPageIndex + 1 === this.getPageCount
+        })
+      } else {
         this.addPage = 0
-        this.getGoodsList(to.query)
+        this.getGoodsList(to.query).then(() => {
+          // this.listLoadEnd()
+          this.scrollDisabled = this.goodsPageIndex + 1 === this.getPageCount
+        })
+        
       }
     },
     'goodsNotify' (to,from) {

@@ -1,6 +1,9 @@
 <template>
   <div class="goodsList">
-    <ul v-if="goodsList && goodsList.length > 0">
+    <ul v-if="!isListLoading && goodsList && goodsList.length > 0"
+        v-infinite-scroll="loadMore"
+        infinite-scroll-disabled="scrollDisabled"
+        infinite-scroll-distance="10">
       <li
           class="goods" 
           v-for="(goods, index) in goodsList" 
@@ -13,16 +16,18 @@
         <div class="loading-wrapper" v-show="isLoadingIndex === index">
           <mt-spinner type="snake" class="loading" ></mt-spinner>
         </div>
-        <div class="goods-content clearfix" v-if="!detailList[index] && !(isLoadingIndex === index)">
-          <div class="left-img">
-            <a :href="goods.url">
-              <img v-lazy="goods.smallImageUrl" alt="">
-            </a>
-          </div>
-          <div class="right-content">
-            <p class="article">
-              {{goods.shortContent}}
-            </p>
+        <div class="goods-content" v-if="!detailList[index] && !(isLoadingIndex === index)">
+          <div class="content-wrapper clearfix">
+            <div class="left-img">
+              <a :href="goods.url">
+                <img v-lazy="goods.smallImageUrl" alt="">
+              </a>
+            </div>
+            <div class="right-content">
+              <p class="article">
+                {{goods.shortContent}}
+              </p>
+            </div>
           </div>
           <p class="source clearfix">
             <span class="sourceName">from {{dealDomain(goods.goodSourceName)}}</span>
@@ -84,8 +89,15 @@
           </div>
         </div>
       </li >
+      <li class="list-loading li-loading" v-show="scrollLoading">
+        <mt-spinner type="snake" class="loading"></mt-spinner>
+      </li> 
     </ul>
-    <no-list v-else>
+    <div class="list-loading" v-if="isListLoading">
+      <mt-spinner type="snake" class="loading"></mt-spinner>
+      <p>数据加载中</p>
+    </div> 
+    <no-list v-if="goodsList === null">
       没有找到相应商品
     </no-list>
   </div>
@@ -95,8 +107,9 @@
 import NoList from './NoList.vue'
 import upvote from '../components/Upvote.vue'
 import { changeTime, dealDomain, ignoreLink, getOff } from '../utils/utils';
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import { Spinner, Lazyload } from 'mint-ui';
+import qs from 'qs';
 export default {
   props: {
     goodsList: {
@@ -110,11 +123,21 @@ export default {
     },
     behaviorFun: {
       type: Function,
+    },
+    isListLoading: {
+      type: Boolean,
+      default: false
+    },
+    scrollDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
+    ...mapGetters(['getPageCount']),
     ...mapState([
-      'goodsDetail'
+      'goodsDetail',
+      'goodsPageIndex'
     ])
   },
   data() {
@@ -123,11 +146,12 @@ export default {
       getOff,
       detailList: [], // 详情列表
       indexList: [], // 用来存储已查看详情的商品的index  用于收缩详情时查询dom以便于滚回原来高度
-      isLoadingIndex: null // 是否显示loading动画
+      isLoadingIndex: null, // 是否显示loading动画
+      scrollLoading: true // 滚动时的loading动画
     }
   },
   methods: {
-    ...mapActions(['getGoodsDetail']),
+    ...mapActions(['getGoodsDetail', 'getGoodsList']),
     changeTime (time) {
       return changeTime(time)
     },
@@ -151,6 +175,18 @@ export default {
       this.detailList[index] = null;
       this.isLoadingIndex = null
       this.indexList.splice(detailIndex, 1)
+    },
+    loadMore () {
+      if(this.goodsPageIndex === this.getPageCount){
+        this.scrollLoading = false
+        return;
+      }
+      this.changePage(this.goodsPageIndex + 1)
+    },
+    changePage(i) {
+      var obj = Object.assign({}, this.$route.query, {page: i})
+      var d = qs.stringify(obj);
+      this.$router.push({path:'/?'+d})
     }
   },
   watch: {
@@ -169,6 +205,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @mixin textOverFlow ($line) { // 多行超出隐藏  适用于移动端  参数是显示的行数
+    word-break: break-all;
+    text-overflow: ellipsis;
+    display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
+    -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+    -webkit-line-clamp: $line; /** 显示的行数 **/
+    overflow: hidden;  /** 隐藏超出的内容 **/
+  }
   .goodsList{
     .goods{
       width: 100%;
@@ -177,7 +221,11 @@ export default {
 
       .goods-title{
         color: #444;
-        font-weight: 500;font-size: .34rem;
+        font-weight: 500;
+        font-size: .34rem;
+        max-height: .88rem;
+        @include textOverFlow(2);
+
         .price{
           color: red;
           font-weight: bold;
@@ -199,6 +247,8 @@ export default {
         margin-top: .3rem;
         .left-img{
           float: left;
+          width: 1.3rem;
+          text-align: center;
           margin:0 .14rem;
           img{
             height: 1.3rem;
@@ -211,10 +261,9 @@ export default {
           margin-left: .03rem;
           .article{
             height: 1.14rem;
-            word-break: break-word;
-            overflow: hidden;
-            font-size: .28rem;
+            font-size: 14px;
             color: #aaa;
+            @include textOverFlow(3);
           }
         }
 
@@ -222,7 +271,6 @@ export default {
           height: .32rem;
           line-height: .32rem;
           margin-top: .13rem;
-          padding: 0 .14rem;
           color: #aaa;
 
           .sourceName{
@@ -322,7 +370,7 @@ export default {
         height: 2.78rem;
         .upvote{
           left: 50%;
-          top: 1.15rem;
+          top: .15rem;
           transform: translateX(-50%);
         }
         .buyNowLink {
@@ -332,15 +380,39 @@ export default {
           font-size: .32rem;
           padding: 0;
           right: 50%;
+          top: 1.15rem;
           transform: translateX(50%);
         }
 
         .goods-shrink{
           position: absolute;
-          bottom: 0;
+          bottom: -.15rem;
           left: 50%;
           transform: translateX(-50%);
         }
+      }
+    }
+
+    .list-loading{
+      position: relative;
+      padding: 1rem 0;
+      text-align: center;
+      line-height: 100%;
+      .loading{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      p{
+        position: absolute;
+        left: 50%;
+        top: 80%;
+        transform: translateX(-50%);
+      }
+
+      &.li-loading{
+        padding: .5rem 0;
       }
     }
   }

@@ -22,7 +22,7 @@ const state = {
     malls:[],//商城
     categorys:[],//商品类别
     keyWord:'',//搜索关键词
-    goodsTotalCount:0,
+    goodsTotalCount:-1,
     goodsPageSize:1,
     goodsPageIndex:1,
     goodsNotify:0,
