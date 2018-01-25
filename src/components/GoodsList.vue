@@ -95,10 +95,10 @@
     </ul>
     <div class="list-loading" v-if="isListLoading">
       <mt-spinner type="snake" class="loading"></mt-spinner>
-      <p>数据加载中</p>
+      <p>loading...</p>
     </div> 
     <no-list v-if="goodsList === null">
-      没有找到相应商品
+      Did not find the corresponding product
     </no-list>
   </div>
 </template>
