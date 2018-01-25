@@ -13,7 +13,9 @@
           :bottomDistance="30" -->
       <mt-loadmore  
           :top-method="loadTop"
-
+          :topPullText="'Pull down to refresh'"
+          :topDropText="'Release the update'"
+          :topLoadingText="'Loading...'"
           ref="loadmore"
           style="width:100%">
         <a class="feednotify" v-if="goodsNotify > criticalNotifyNum"  @click="getGoodsList($route.query)">

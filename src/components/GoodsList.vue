@@ -151,7 +151,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getGoodsDetail', 'getGoodsList']),
+    ...mapActions(['getGoodsDetail']),
     changeTime (time) {
       return changeTime(time)
     },
